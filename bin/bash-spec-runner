@@ -13,7 +13,9 @@ function run_suite {
     declare -f before_all > /dev/null; [[ $? -ne 0 ]] || before_all 
 
     while read -r spec_fn; do
+        declare -f before_each > /dev/null; [[ $? -ne 0 ]] || before_each 
         run_spec $spec_fn
+        declare -f after_each > /dev/null; [[ $? -ne 0 ]] || after_each 
     done < <(get_test_list "$file_name")
 
     declare -f after_all > /dev/null; [[ $? -ne 0 ]] || after_all 
