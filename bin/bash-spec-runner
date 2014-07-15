@@ -1,0 +1,63 @@
+#!/bin/bash
+spec_count=0
+fail_count=0
+spec_fail=0
+current_spec_fn=''
+
+function run_suite {
+    local file_name="$1"
+    local spec_fn
+
+    source $file_name
+
+    declare -f before_all > /dev/null; [[ $? -ne 0 ]] || before_all 
+
+    while read -r spec_fn; do
+        run_spec $spec_fn
+    done < <(get_test_list "$file_name")
+
+    declare -f after_all > /dev/null; [[ $? -ne 0 ]] || after_all 
+
+    print_results
+
+    exit $fail_count
+}
+
+function run_spec {
+    local spec_fn=$1
+
+    spec_fail=0
+    current_spec_fn=$spec_fn
+
+    $spec_fn
+
+    spec_count=$((spec_count + 1))
+
+    if [[ $spec_fail -gt 0 ]]; then
+        fail_count=$((fail_count + 1))
+    fi
+}
+
+function assert {
+    eval "$*" || fail_test "$*"
+}
+
+function fail_test {
+    if [[ $spec_fail -eq 0 ]]; then
+        echo $current_spec_fn
+    fi
+
+    echo "Assert failed: $1"
+
+    spec_fail=$((spec_fail + 1))
+}
+
+function get_test_list {
+    grep -P '^\s*(function\s*it_|it_[a-zA-Z0-9_]*\s*\()' "$1" | sed 's/.*\(it_[a-zA-Z0-9_]*\).*/\1/'
+}
+
+function print_results {
+    echo "Results: $((spec_count - spec_fail))/$spec_count"
+}
+
+run_suite "$1"

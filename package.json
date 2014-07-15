@@ -1,0 +1,27 @@
+{
+  "name": "bash-spec-runner",
+  "version": "0.0.0",
+  "description": "A bash spec runner",
+  "bin": {
+    "bash-spec-runner": "bin/bash-spec-runner"
+  },
+  "scripts": {
+    "test": "PATH=$PATH:$(pwd)/bin test/spec-test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ffortier/bash-spec-runner.git"
+  },
+  "keywords": [
+    "bash",
+    "unit",
+    "test",
+    "spec"
+  ],
+  "author": "Francis Fortier <francis.fortier@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ffortier/bash-spec-runner/issues"
+  },
+  "homepage": "https://github.com/ffortier/bash-spec-runner"
+}
